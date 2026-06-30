@@ -20,10 +20,17 @@ jobs:
       - name: Restore packages
         run: nuget restore GARbro.sln
 
+      - name: Fetch .NET Framework 4.6 reference assemblies
+        # GitHub runners ship newer targeting packs but not v4.6; this package
+        # supplies the v4.6 reference assemblies so we build without retargeting.
+        run: nuget install Microsoft.NETFramework.ReferenceAssemblies.net46 -Version 1.0.3 -OutputDirectory packages -ExcludeVersion
+
       - name: Build (Release)
+        shell: pwsh
         run: |
-          msbuild ArcFormats\ArcFormats.csproj /p:Configuration=Release /m
-          msbuild Console\GARbro.Console.csproj /p:Configuration=Release /m
+          $ref = Join-Path $PWD 'packages\Microsoft.NETFramework.ReferenceAssemblies.net46\build\.NETFramework\v4.6'
+          msbuild ArcFormats\ArcFormats.csproj /p:Configuration=Release /p:FrameworkPathOverride="$ref" /m
+          msbuild Console\GARbro.Console.csproj /p:Configuration=Release /p:FrameworkPathOverride="$ref" /m
 
       - name: Package
         shell: pwsh

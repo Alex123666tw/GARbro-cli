@@ -1,0 +1,24 @@
+garbro-cli
+==========
+
+This distribution includes software from the following sources, each under the
+MIT License unless noted otherwise.
+
+GARbro — Game Resource browser
+  Copyright (c) 2014-2020 morkt
+  https://github.com/morkt/GARbro
+
+Command-line interface groundwork
+  Copyright (c) 2019-2021 Bioruebe
+  Originally submitted upstream as https://github.com/morkt/GARbro/pull/394
+
+garbro-cli distribution & subprocess hardening
+  Copyright (c) 2026 garbro-cli contributors
+
+Bundled third-party components (see each project for its own license):
+  NAudio, ICSharpCode.SharpZipLib, NVorbis, Concentus,
+  System.Data.SQLite (public domain), and various Microsoft.* / System.*
+  packages distributed under the MIT License.
+
+The above copyright notices and the permission notice in LICENSE shall be
+included in all copies or substantial portions of the Software.

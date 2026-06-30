@@ -1,4 +1,4 @@
-# garbro-cli
+# GARbro-cli
 
 > A command-line build of **GARbro** for listing and extracting files from visual-novel / game archives — designed to be driven as a subprocess by other tools.
 

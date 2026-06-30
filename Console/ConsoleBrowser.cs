@@ -38,6 +38,7 @@ namespace GARbro {
 		private bool skipAudio;
 		private bool convertAudio;
 		private bool adjustImageOffset;
+		private static bool quiet;
 
 		private ExistingFileAction existingFileAction = ExistingFileAction.Ask;
 		
@@ -102,8 +103,8 @@ namespace GARbro {
 				}
 			}
 
-			Console.WriteLine();
-			Console.WriteLine(iSkipped > 0? iSkipped + " files were skipped": "All OK");
+			if (iSkipped > 0) Environment.ExitCode = 1;
+			if (!quiet) Console.Error.WriteLine(iSkipped > 0? iSkipped + " files were skipped": "All OK");
 		}
 
 		void Archive_ExtractConvertedImage(ArcFile arc, Entry entry) {
@@ -370,8 +371,24 @@ namespace GARbro {
 					case "-ocu":
 						autoImageFormat = true;
 						break;
+					case "-y":
+					case "--overwrite":
+						existingFileAction = ExistingFileAction.Overwrite;
+						break;
+					case "-s":
+					case "--skip":
+						existingFileAction = ExistingFileAction.Skip;
+						break;
+					case "-r":
+					case "--rename":
+						existingFileAction = ExistingFileAction.Rename;
+						break;
+					case "-q":
+					case "--quiet":
+						quiet = true;
+						break;
 					default:
-						Console.WriteLine("Warning: Unknown command line parameter: " + args[i]);
+						PrintError("Unknown command line parameter: " + args[i]);
 						return;
 				}
 			}
@@ -418,8 +435,6 @@ namespace GARbro {
 
 			var fileArray = fileList.OrderBy(e => e.Offset).ToArray();
 
-			Console.WriteLine(fileArray[0].Offset);
-
 			switch (command) {
 				case ConsoleCommand.Info:
 					Console.WriteLine(archiveFileSystem.Source.Tag);
@@ -441,7 +456,7 @@ namespace GARbro {
 		/// <param name="command"></param>
 		void ProcessNonArchiveFile(string file, ConsoleCommand command) {
 			var fileName = Path.GetFileName(file);
-			if (fileFilter != null && fileFilter.IsMatch(fileName)) PrintError("No files match the given filter");
+			if (fileFilter != null && !fileFilter.IsMatch(fileName)) { PrintError("No files match the given filter"); return; }
 
 			switch (command) {
 				case ConsoleCommand.Info:
@@ -514,23 +529,32 @@ namespace GARbro {
 			Console.WriteLine("  -ns       	   Ignore scripts");
 			Console.WriteLine("  -aio       	   Adjust image offset");
 			Console.WriteLine("  -ocu       	   Set -if switch to only convert unknown image formats");
+			Console.WriteLine("  -y, --overwrite  Overwrite existing files without prompting (default when non-interactive)");
+			Console.WriteLine("  -s, --skip       Skip existing files");
+			Console.WriteLine("  -r, --rename     Write to a new name instead of overwriting");
+			Console.WriteLine("  -q, --quiet      Suppress banner/progress (errors still go to stderr)");
 			Console.WriteLine();
 			//Console.WriteLine(FormatCatalog.Instance.ArcFormats.Count() + " supported formats");
 		}
 
 		static void PrintProgress(int current, int total, string fileName) {
-			Console.WriteLine(string.Format("[{0}/{1}] {2}", current, total, fileName));
+			if (quiet) return;
+			Console.Error.WriteLine(string.Format("[{0}/{1}] {2}", current, total, fileName));
 		}
 
 		static void PrintWarning(string msg) {
-			Console.WriteLine("Warning: " + msg);
+			if (quiet) return;
+			Console.Error.WriteLine("Warning: " + msg);
 		}
 
 		static void PrintError(string msg) {
-			Console.WriteLine("Error: " + msg);
+			Console.Error.WriteLine("Error: " + msg);
+			Environment.ExitCode = 1;
 		}
 
 		string OverwritePrompt(string filename) {
+			// Non-interactive (redirected stdin / no console): never block on a prompt.
+			if (existingFileAction == ExistingFileAction.Ask && Console.IsInputRedirected) return filename;
 			switch (existingFileAction) {
 				
 				case ExistingFileAction.Skip:
@@ -597,8 +621,8 @@ namespace GARbro {
 
 		static void Main(string[] args) {
 			Console.OutputEncoding = Encoding.UTF8;
-			Console.WriteLine(string.Format("GARbro - Game Resource browser, version {0}\n2014-2020 by mørkt, published under a MIT license", Assembly.GetAssembly(typeof(FormatCatalog)).GetName().Version));
-			Console.WriteLine("-----------------------------------------------------------------------------\n");
+			Console.Error.WriteLine(string.Format("GARbro - Game Resource browser, version {0}\n2014-2020 by mørkt, published under a MIT license", Assembly.GetAssembly(typeof(FormatCatalog)).GetName().Version));
+			Console.Error.WriteLine("-----------------------------------------------------------------------------\n");
 
 			FormatCatalog.Instance.ParametersRequest += OnParametersRequest;
 			//var listener = new TextWriterTraceListener(Console.Error);

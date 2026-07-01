@@ -26,18 +26,25 @@ The above copyright notices and the permission notice in LICENSE shall be
 included in all copies or substantial portions of the Software.
 
 
-## Bundled GPLv2 components (inherited from upstream GARbro)
+## Default build is MIT-clean; GPLv2 is opt-in
 
-The pre-built release bundles ArcFormats.dll, compiled from upstream GARbro
-sources. Two of those source files are licensed under the GNU General Public
-License, version 2 — not MIT:
+The pre-built release bundles ArcFormats.dll built in the DEFAULT configuration,
+which contains NO GPLv2 code:
 
-  * ArcFormats/Blowfish.cs       — Copyright (c) 2007 Novell, Inc. (GPLv2)
-  * ArcFormats/KogadoCocotte.cs  — C# port by morkt of GPLv2 code by juicy.gt
+  * Blowfish (ArcFormats/Blowfish.cs) has been reimplemented from the public-domain
+    Blowfish reference (Schneier / Kocher). It is MIT-licensed with this repository
+    and contains no Novell GPL code.
+  * The GPLv2 file ArcFormats/KogadoCocotte.cs (morkt's C# port of GPLv2 code by
+    juicy.gt) is EXCLUDED from the default build. It is compiled in only when the
+    INCLUDE_GPL constant is defined.
 
-Because these files are linked into ArcFormats.dll, the compiled binary as a
-whole is a combined work covered by GPLv2 (full text: licenses/GPL-2.0.txt).
-The complete corresponding source is this repository. All code added by this
-fork, and the CLI packaging, is MIT (see LICENSE). Invoking GARbro.Console.exe
-as a separate process (arm's-length) does not place the calling program under
-the GPL.
+Therefore the released ArcFormats.dll is MIT-clean. The GPLv2 source file remains
+in this repository for an optional opt-in build. If you rebuild with
+INCLUDE_GPL defined (which also re-enables Kogado "Cocotte" compression and the
+older ShiinaRio WARC RNG index decompression, which reuse that file's range
+coder), the resulting ArcFormats.dll becomes a combined work covered by GPLv2
+(full text: licenses/GPL-2.0.txt; the corresponding source is this repository).
+
+All code added by this fork, and the CLI packaging, is MIT (see LICENSE).
+Invoking GARbro.Console.exe as a separate process (arm's-length) does not place
+the calling program under the GPL, even for an INCLUDE_GPL build.

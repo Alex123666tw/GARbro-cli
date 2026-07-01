@@ -145,6 +145,7 @@ namespace GameRes.Formats.Hypatia
             {
                 if (2 == packed_entry.CompressionType)
                 {
+#if INCLUDE_GPL
                     var decoded = new MemoryStream ((int)packed_entry.UnpackedSize);
                     try
                     {
@@ -159,6 +160,11 @@ namespace GameRes.Formats.Hypatia
                         decoded.Dispose();
                         throw;
                     }
+#else
+                    // Cocotte decompression lives in KogadoCocotte.cs, which is GPLv2 and is
+                    // excluded from the default MIT-clean build. Rebuild with INCLUDE_GPL to enable it.
+                    throw new NotSupportedException ("Cocotte compression (GPLv2) is not included in this MIT build; rebuild with INCLUDE_GPL.");
+#endif
                 }
                 // if (1 == packed_entry.CompressionType)
                 var unpacked = new byte[packed_entry.UnpackedSize];

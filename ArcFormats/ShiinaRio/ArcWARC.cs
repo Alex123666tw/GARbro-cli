@@ -276,9 +276,17 @@ namespace GameRes.Formats.ShiinaRio // 椎名里緒
 
         uint UnpackRNG (byte[] input, int in_start, uint input_size, byte[] output)
         {
+#if INCLUDE_GPL
             var coder = new Kogado.CRangeCoder();
             coder.InitQSModel (257, 12, 2000, null, false);
             return coder.Decode (output, 0, (uint)output.Length, input, (uint)in_start, input_size);
+#else
+            // The range coder used here (Kogado.CRangeCoder) lives in KogadoCocotte.cs, which is
+            // GPLv2 and is excluded from the default MIT-clean build. Only affects older ShiinaRio
+            // WARC archives (version 120-169); version >= 170 uses ZLib and is unaffected.
+            // Rebuild with INCLUDE_GPL to enable RNG-compressed WARC support.
+            throw new NotSupportedException ("ShiinaRio WARC RNG decompression (GPLv2) is not included in this MIT build; rebuild with INCLUDE_GPL.");
+#endif
         }
 
         public override ResourceOptions GetDefaultOptions ()

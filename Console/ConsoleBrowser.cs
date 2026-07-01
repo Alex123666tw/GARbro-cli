@@ -201,7 +201,7 @@ namespace GARbro {
 			using (var soundInput = AudioFormat.Read(binaryStream)) {
 				if (soundInput == null) return false;
 
-				Console.WriteLine($"Converting {soundInput.SourceFormat} audio");
+				Console.Error.WriteLine($"Converting {soundInput.SourceFormat} audio");
 				ConvertAudio(fileName, soundInput);
 			}
 
@@ -350,6 +350,10 @@ namespace GARbro {
 						break;
 					case "-if":
 						i++;
+						if (i >= argLength) {
+							PrintError("No image format specified");
+							return;
+						}
 						var formatTag = args[i].ToUpper();
 						if (formatTag == "JPG") formatTag = "JPEG";
 
@@ -478,7 +482,7 @@ namespace GARbro {
 					ListFiles(new Entry[] { entry });
 					break;
 				case ConsoleCommand.Extract:
-					if (ConvertFile(file)) Console.WriteLine("All OK");
+					if (ConvertFile(file)) Console.Error.WriteLine("All OK");
 					break;
 			}
 		}

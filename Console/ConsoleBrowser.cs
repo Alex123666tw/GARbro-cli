@@ -201,7 +201,7 @@ namespace GARbro {
 			using (var soundInput = AudioFormat.Read(binaryStream)) {
 				if (soundInput == null) return false;
 
-				Console.WriteLine($"Converting {soundInput.SourceFormat} audio");
+				Console.Error.WriteLine($"Converting {soundInput.SourceFormat} audio");
 				ConvertAudio(fileName, soundInput);
 			}
 
@@ -256,8 +256,14 @@ namespace GARbro {
 		}
 
 		Stream CreateNewFile(string filename) {
-			var path = Path.Combine(outputDirectory, filename);
-			path = Path.GetFullPath(path);
+			var outputRoot = Path.GetFullPath(outputDirectory);
+			var path = Path.GetFullPath(Path.Combine(outputRoot, filename));
+			var rootWithSep = outputRoot.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal)
+				? outputRoot : outputRoot + Path.DirectorySeparatorChar;
+			if (!path.StartsWith(rootWithSep, StringComparison.OrdinalIgnoreCase)) {
+				throw new UnauthorizedAccessException(string.Format(
+					"Refusing to extract entry outside output directory: '{0}'", filename));
+			}
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 
 			if (File.Exists(path)) {
@@ -344,6 +350,10 @@ namespace GARbro {
 						break;
 					case "-if":
 						i++;
+						if (i >= argLength) {
+							PrintError("No image format specified");
+							return;
+						}
 						var formatTag = args[i].ToUpper();
 						if (formatTag == "JPG") formatTag = "JPEG";
 
@@ -472,7 +482,7 @@ namespace GARbro {
 					ListFiles(new Entry[] { entry });
 					break;
 				case ConsoleCommand.Extract:
-					if (ConvertFile(file)) Console.WriteLine("All OK");
+					if (ConvertFile(file)) Console.Error.WriteLine("All OK");
 					break;
 			}
 		}

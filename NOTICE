@@ -16,9 +16,28 @@ garbro-cli distribution & subprocess hardening
   Copyright (c) 2026 garbro-cli contributors
 
 Bundled third-party components (see each project for its own license):
-  NAudio, ICSharpCode.SharpZipLib, NVorbis, Concentus,
-  System.Data.SQLite (public domain), and various Microsoft.* / System.*
-  packages distributed under the MIT License.
+  NAudio, ICSharpCode.SharpZipLib, NVorbis, and various Microsoft.* /
+  System.* packages distributed under the MIT License.
+
+  Concentus and System.Data.SQLite are referenced only by the GUI /
+  Experimental projects and are NOT included in the CLI release zip.
 
 The above copyright notices and the permission notice in LICENSE shall be
 included in all copies or substantial portions of the Software.
+
+
+## Bundled GPLv2 components (inherited from upstream GARbro)
+
+The pre-built release bundles ArcFormats.dll, compiled from upstream GARbro
+sources. Two of those source files are licensed under the GNU General Public
+License, version 2 — not MIT:
+
+  * ArcFormats/Blowfish.cs       — Copyright (c) 2007 Novell, Inc. (GPLv2)
+  * ArcFormats/KogadoCocotte.cs  — C# port by morkt of GPLv2 code by juicy.gt
+
+Because these files are linked into ArcFormats.dll, the compiled binary as a
+whole is a combined work covered by GPLv2 (full text: licenses/GPL-2.0.txt).
+The complete corresponding source is this repository. All code added by this
+fork, and the CLI packaging, is MIT (see LICENSE). Invoking GARbro.Console.exe
+as a separate process (arm's-length) does not place the calling program under
+the GPL.

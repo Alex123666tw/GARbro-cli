@@ -2,8 +2,15 @@ name: build-and-release
 
 on:
   push:
-    tags: ['v*']
+    # Only this fork's own releases. Upstream GARbro carries ~50 legacy
+    # v1.x tags that would otherwise fire this workflow; scope the trigger
+    # to the fork's v0.* series. Bump the pattern (e.g. add 'v1.*') only
+    # when this fork intentionally moves to a new major version line.
+    tags: ['v0.*']
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -39,9 +46,20 @@ jobs:
           New-Item -ItemType Directory -Force dist | Out-Null
           New-Item -ItemType Directory -Force pkg  | Out-Null
           Copy-Item 'bin\Release\*' pkg -Recurse -Force
-          # drop debug symbols and xml docs from the shipped zip
-          Get-ChildItem pkg -Recurse -Include *.pdb,*.xml | Remove-Item -Force
-          Compress-Archive -Path 'pkg\*' -DestinationPath "dist\garbro-cli-$ver-win.zip" -Force
+          # drop debug symbols and xml docs from the shipped zip.
+          # NB: -Include only matches when the path ends in \*, so glob pkg\*.
+          Get-ChildItem pkg\* -Recurse -Include *.pdb,*.xml | Remove-Item -Force
+          # bundle license / notice files (the shipped ArcFormats.dll contains
+          # GPLv2 sources, so the GPL-2.0 text must travel with the binary).
+          Copy-Item LICENSE,NOTICE pkg -Force
+          New-Item -ItemType Directory -Force pkg\licenses | Out-Null
+          Copy-Item licenses\GPL-2.0.txt pkg\licenses -Force
+          $zip = "dist\garbro-cli-$ver-win.zip"
+          Compress-Archive -Path 'pkg\*' -DestinationPath $zip -Force
+          # compute and surface the SHA-256 of the release archive
+          $sha = (Get-FileHash $zip -Algorithm SHA256).Hash
+          "SHA256 ($zip) = $sha" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
+          "SHA256=$sha" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -54,3 +72,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.zip
+          body: |
+            SHA-256 of the release archive:
+
+            ```
+            ${{ env.SHA256 }}
+            ```

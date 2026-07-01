@@ -41,9 +41,8 @@ Please read the [License](#license) and [Disclaimer](#disclaimer) before use.
 | Component | Role | License |
 |---|---|---|
 | [C# / .NET Framework 4.6](https://dotnet.microsoft.com/) | language & runtime target | — |
-| [GARbro](https://github.com/morkt/GARbro) — GameRes, ArcFormats | archive detection & extraction engine | MIT |
-| [NAudio](https://github.com/naudio/NAudio) · [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) · [NVorbis](https://github.com/NVorbis/NVorbis) · [Concentus](https://github.com/lostromb/concentus) | audio / compression codecs used by formats | MIT |
-| [System.Data.SQLite](https://system.data.sqlite.org/) | format scheme database | Public Domain |
+| [GARbro](https://github.com/morkt/GARbro) — GameRes, ArcFormats | archive detection & extraction engine | MIT, plus two bundled GPLv2 files (see [License](#license)) |
+| [NAudio](https://github.com/naudio/NAudio) · [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) · [NVorbis](https://github.com/NVorbis/NVorbis) | audio / compression codecs used by formats | MIT |
 
 ## Quick start
 
@@ -116,13 +115,15 @@ Please report vulnerabilities privately as described in [SECURITY.md](SECURITY.m
 
 ## License
 
-Released under the **MIT License** — see [LICENSE](LICENSE). garbro-cli is a fork of GARbro (© 2014–2020 morkt, MIT). Every bundled dependency is permissively licensed (MIT or public domain), so the combined distribution stays MIT-clean. Attribution for upstream and contributors is in [NOTICE](NOTICE).
+The CLI packaging and all code added by this fork are released under the **MIT License** — see [LICENSE](LICENSE). garbro-cli is a fork of GARbro (© 2014–2020 morkt, MIT).
+
+However, the prebuilt release contains the upstream `ArcFormats.dll`, which links in two source files licensed under **GPLv2** — `ArcFormats/Blowfish.cs` (© 2007 Novell, Inc.) and `ArcFormats/KogadoCocotte.cs` (morkt's C# port of GPLv2 code by juicy.gt). Because they are compiled into that DLL, the **release archive as a whole is a combined work governed by GPLv2** (full text: [licenses/GPL-2.0.txt](licenses/GPL-2.0.txt); the corresponding source is this repository). Calling `GARbro.Console.exe` as a separate process (arm's-length) does **not** place the calling program under the GPL. See [NOTICE](NOTICE) for the full disclosure and attribution.
 
 ## Open-source credits
 
 - [GARbro](https://github.com/morkt/GARbro) by morkt — the engine this builds on
 - Command-line groundwork by [Bioruebe (PR #394)](https://github.com/morkt/GARbro/pull/394)
-- NAudio · SharpZipLib · NVorbis · Concentus · System.Data.SQLite
+- NAudio · SharpZipLib · NVorbis (Concentus · System.Data.SQLite are GUI/Experimental only, not in the CLI release)
 
 ## Disclaimer
 
@@ -168,9 +169,8 @@ garbro-cli 是 [GARbro](https://github.com/morkt/GARbro)(日系視覺小說引�
 | 套件 | 用途 | 授權 |
 |---|---|---|
 | [C# / .NET Framework 4.6](https://dotnet.microsoft.com/) | 程式語言與執行環境目標 | — |
-| [GARbro](https://github.com/morkt/GARbro) — GameRes, ArcFormats | 封包辨識與解包引擎 | MIT |
-| [NAudio](https://github.com/naudio/NAudio) · [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) · [NVorbis](https://github.com/NVorbis/NVorbis) · [Concentus](https://github.com/lostromb/concentus) | 格式用到的音訊 / 壓縮編解碼 | MIT |
-| [System.Data.SQLite](https://system.data.sqlite.org/) | 格式 scheme 資料庫 | Public Domain |
+| [GARbro](https://github.com/morkt/GARbro) — GameRes, ArcFormats | 封包辨識與解包引擎 | MIT,另含兩個 GPLv2 檔(見 [授權](#授權)) |
+| [NAudio](https://github.com/naudio/NAudio) · [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) · [NVorbis](https://github.com/NVorbis/NVorbis) | 格式用到的音訊 / 壓縮編解碼 | MIT |
 
 ### 快速開始
 
@@ -243,13 +243,15 @@ GARbro.Console.exe x -y -q -f "SCRIPT\.SRC|TEXT\.DAT|POINT\.DAT" -o out data.pac
 
 ### 授權
 
-以 **MIT License** 釋出 —— 見 [LICENSE](LICENSE)。garbro-cli 是 GARbro(© 2014–2020 morkt,MIT)的 fork。所有內含相依套件皆為寬鬆授權(MIT 或 public domain),因此整包散布維持 MIT 乾淨。上游與貢獻者的致謝見 [NOTICE](NOTICE)。
+CLI 打包與本 fork 自加的所有程式碼以 **MIT License** 釋出 —— 見 [LICENSE](LICENSE)。garbro-cli 是 GARbro(© 2014–2020 morkt,MIT)的 fork。
+
+但發行包內含上游的 `ArcFormats.dll`,其中編入兩個 **GPLv2** 授權的原始檔 —— `ArcFormats/Blowfish.cs`(© 2007 Novell, Inc.)與 `ArcFormats/KogadoCocotte.cs`(morkt 移植 juicy.gt 的 GPLv2 碼)。因為它們被編進該 DLL,**發行封存檔整體即為受 GPLv2 規範的合併著作**(全文見 [licenses/GPL-2.0.txt](licenses/GPL-2.0.txt);對應原始碼即本倉庫)。作為獨立子程序(arm's-length)呼叫 `GARbro.Console.exe` **不會**使呼叫端受 GPL 拘束。完整揭露與致謝見 [NOTICE](NOTICE)。
 
 ### 開源專案
 
 - [GARbro](https://github.com/morkt/GARbro) by morkt —— 本專案的底層引擎
 - 命令列基礎由 [Bioruebe(PR #394)](https://github.com/morkt/GARbro/pull/394) 奠定
-- NAudio · SharpZipLib · NVorbis · Concentus · System.Data.SQLite
+- NAudio · SharpZipLib · NVorbis(Concentus · System.Data.SQLite 僅 GUI/Experimental 用,不在 CLI 發行包內)
 
 ### 免責聲明
 

@@ -49,8 +49,9 @@ jobs:
           # drop debug symbols and xml docs from the shipped zip.
           # NB: -Include only matches when the path ends in \*, so glob pkg\*.
           Get-ChildItem pkg\* -Recurse -Include *.pdb,*.xml | Remove-Item -Force
-          # bundle license / notice files (the shipped ArcFormats.dll contains
-          # GPLv2 sources, so the GPL-2.0 text must travel with the binary).
+          # bundle license / notice files. The default-build ArcFormats.dll is
+          # MIT-clean, but NOTICE documents the opt-in INCLUDE_GPL build and the
+          # GPL-2.0 text is retained for that case.
           Copy-Item LICENSE,NOTICE pkg -Force
           New-Item -ItemType Directory -Force pkg\licenses | Out-Null
           Copy-Item licenses\GPL-2.0.txt pkg\licenses -Force

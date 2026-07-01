@@ -256,8 +256,14 @@ namespace GARbro {
 		}
 
 		Stream CreateNewFile(string filename) {
-			var path = Path.Combine(outputDirectory, filename);
-			path = Path.GetFullPath(path);
+			var outputRoot = Path.GetFullPath(outputDirectory);
+			var path = Path.GetFullPath(Path.Combine(outputRoot, filename));
+			var rootWithSep = outputRoot.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal)
+				? outputRoot : outputRoot + Path.DirectorySeparatorChar;
+			if (!path.StartsWith(rootWithSep, StringComparison.OrdinalIgnoreCase)) {
+				throw new UnauthorizedAccessException(string.Format(
+					"Refusing to extract entry outside output directory: '{0}'", filename));
+			}
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 
 			if (File.Exists(path)) {

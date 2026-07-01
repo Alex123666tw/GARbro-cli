@@ -1009,7 +1009,7 @@
     <Compile Include="Will\ImageWIP.cs" />
     <Compile Include="Crowd\ImageZBM.cs" />
     <Compile Include="KiriKiri\KiriKiriCx.cs" />
-    <Compile Include="KogadoCocotte.cs" />
+    <Compile Include="KogadoCocotte.cs" Condition="$(DefineConstants.Contains('INCLUDE_GPL'))" />
     <Compile Include="AudioOGG.cs" />
     <Compile Include="LzssStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

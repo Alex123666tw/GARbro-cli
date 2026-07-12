@@ -36,7 +36,9 @@ jobs:
         shell: pwsh
         run: |
           $ref = Join-Path $PWD 'packages\Microsoft.NETFramework.ReferenceAssemblies.net46\build\.NETFramework\v4.6'
-          $referencePath = "$ref;$ref\Facades"
+          # MSBuild uses semicolons to separate /p assignments, so escape the
+          # list separator inside the ReferencePath property value.
+          $referencePath = "$ref%3B$ref\Facades"
 
           msbuild ArcFormats\ArcFormats.csproj /p:Configuration=Release /p:FrameworkPathOverride="$ref" /p:ReferencePath="$referencePath" /m
           if ($LASTEXITCODE -ne 0) { throw "ArcFormats Release build failed with exit code $LASTEXITCODE." }

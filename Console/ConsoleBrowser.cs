@@ -631,7 +631,9 @@ namespace GARbro {
 
 		static void Main(string[] args) {
 			Console.OutputEncoding = Encoding.UTF8;
-			Console.Error.WriteLine(string.Format("GARbro - Game Resource browser, version {0}\n2014-2020 by mørkt, published under a MIT license", Assembly.GetAssembly(typeof(FormatCatalog)).GetName().Version));
+			var cliVersion = Assembly.GetExecutingAssembly().GetName().Version;
+			var engineVersion = Assembly.GetAssembly(typeof(FormatCatalog)).GetName().Version;
+			Console.Error.WriteLine(string.Format("GARbro-cli version {0} (GARbro engine {1})\n2014-2020 by mørkt, published under a MIT license", cliVersion, engineVersion));
 			Console.Error.WriteLine("-----------------------------------------------------------------------------\n");
 
 			FormatCatalog.Instance.ParametersRequest += OnParametersRequest;

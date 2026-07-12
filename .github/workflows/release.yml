@@ -39,6 +39,10 @@ jobs:
           msbuild ArcFormats\ArcFormats.csproj /p:Configuration=Release /p:FrameworkPathOverride="$ref" /m
           msbuild Console\GARbro.Console.csproj /p:Configuration=Release /p:FrameworkPathOverride="$ref" /m
 
+      - name: Verify release build
+        shell: pwsh
+        run: .\scripts\verify-release.ps1
+
       - name: Package
         shell: pwsh
         run: |
@@ -73,6 +77,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.zip
+          generate_release_notes: true
           body: |
             SHA-256 of the release archive:
 

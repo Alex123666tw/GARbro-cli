@@ -99,7 +99,7 @@ The exit code is `0` on success and non-zero on any error or skipped file. `i` /
 
 ## Roadmap
 
-- GitHub Actions CI for reproducible, tag-triggered releases *(in progress)*.
+- GitHub Actions CI for reproducible, tag-triggered releases.
 - Documented, regression-tested coverage for more engines.
 - Possible .NET (Core) port for cross-platform use.
 
